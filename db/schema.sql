@@ -1,10 +1,15 @@
--- Drop tables if they exist
+-- Create database --
+DROP DATABASE IF EXISTS management;
+CREATE DATABASE management;
+USE management;
+
+-- Drop tables if they exist --
 DROP TABLE IF EXISTS employee;
 DROP TABLE IF EXISTS role;
 DROP TABLE IF EXISTS department;
 
 
--- Create tables
+-- Create tables --
 CREATE TABLE department (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL
