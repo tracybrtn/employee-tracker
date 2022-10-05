@@ -1,46 +1,35 @@
 -- Department Seeds --
-INSERT INTO department (name)
-VALUE ("Engineering");
-INSERT INTO department (name)
-VALUE ("Finance");
-INSERT INTO department (name)
-VALUE ("Human Resources");
+INSERT INTO department 
+    (name)
+VALUES 
+    ("Engineering"),
+    ("Finance"),
+    ("Human Resources");
+
 
 -- Employee Role Seeds --
-INSERT INTO role (title, salary, department_id)
-VALUE ("Lead Engineer", 130000, 1);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Lead Accountant", 125000, 2);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Human Resources Manager", 150000, 3);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Software Engineer", 75000, 1);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Accountant", 60000, 2);
-INSERT INTO role (title, salary, department_id)
-VALUE ("Recruiter", 75000, 3);
-
+INSERT INTO role 
+    (title, salary, department_id)
+VALUES 
+    ("Lead Engineer", 130000, 1),
+    ("Lead Accountant", 125000, 2),
+    ("Human Resources Manager", 150000, 3),
+    ("Software Engineer", 75000, 1),
+    ("Accountant", 60000, 2),
+    ("Recruiter", 75000, 3);
 
 -- Employee Seeds --
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Pracy", "Turton-Travo", NULL, 1);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Belle", "Goth", NULL, 2);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Kendrick", "Duckworth", NULL, 3);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Katie", "Simpson", 1, 4);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Stacey", "Henessy", 1, 4);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Lorelai", "Gilmore", 1, 4);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Vanessa", "Montez", 2, 5);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Estela", "Benito", 2, 5);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Daniela", "Gonzales", 2, 5);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Elena", "Dunquerque", 3, 6);
-INSERT INTO employee (first_name, last_name, manager_id, role_id)
-VALUE("Yasmin", "Lopez", 3, 6);
+INSERT INTO employee 
+    (first_name, last_name, role_id, manager_id)
+VALUES
+    ("Pracy", "Turton-Travo", 1, NULL),
+    ("Belle", "Goth", 2, NULL),
+    ("Kendrick", "Duckworth", 3, NULL),
+    ("Katie", "Simpson", 4, 1),
+    ("Stacey", "Henessy", 4, 1),
+    ("Lorelai", "Gilmore", 4, 1),
+    ("Vanessa", "Montez", 5, 2),
+    ("Estela", "Benito", 5, 2),
+    ("Daniela", "Gonzales", 5, 2),
+    ("Elena", "Dunquerque", 6, 3),
+    ("Yasmin", "Lopez", 6, 3);

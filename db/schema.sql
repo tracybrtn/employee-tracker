@@ -11,30 +11,34 @@ DROP TABLE IF EXISTS department;
 
 -- Create tables --
 CREATE TABLE department (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    department_id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE role (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    role_id INTEGER AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2) NOT NULL,
     department_id INTEGER NOT NULL,
     CONSTRAINT fk_departments
         FOREIGN KEY (department_id)
-        REFERENCES department(id)
+        REFERENCES department(department_id)
         ON DELETE CASCADE
 );
 
 CREATE TABLE employee (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    employee_id INTEGER AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INTEGER NOT NULL,
     manager_id INTEGER,
     CONSTRAINT fk_roles
         FOREIGN KEY (role_id)
-        REFERENCES role(id)
+        REFERENCES role(role_id)
         ON DELETE CASCADE,
-    FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
+    INDEX manag_ind (manager_id),
+    CONSTRAINT fk_manager
+        FOREIGN KEY (manager_id) 
+        REFERENCES employee(employee_id) 
+        ON DELETE SET NULL
 );
