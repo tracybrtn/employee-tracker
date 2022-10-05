@@ -135,11 +135,11 @@ const addEmployee = () => {
     connection.query(`Select * FROM role`, (err, role) => {
         if (err) throw err;
     
-    connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, managers) => {
+    connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
         if (err) throw err;
 
-        managers.map(manager => name: manager.first_name + " " + manager.last_name, value: manager.id)
-        managers.push({name:'None', value: NULL});
+        manager = manager.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}));
+        manager.push({name:'None'});
 
         
         inquirer.prompt([
@@ -164,7 +164,7 @@ const addEmployee = () => {
                     if(last_name) {
                         return true;
                     } else {
-                        console.lof('Please, enter last name of new employee')
+                        console.log('Please, enter last name of new employee')
                         return false;
                     }
                 }
@@ -181,17 +181,26 @@ const addEmployee = () => {
                 message: 'Please, enter manager of employee',
                 choices: manager,
             }
-
         ])
+        
         .then(answer => {
-            var sql = `INSERT INTO employee
-                    VALUES (?)`;
-        console.log('Add department chosen');
-        exitApp();
+            //If the answer for manager is none, the value should be null in the database
+            if (answer.manager_id === 'None') {
+                answer.manager_id = null;
+            };
+            const param = [answer.first_name, answer.last_name, answer.role_id, answer.manager_id];
+            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                    VALUES (?, ?, ?, ?)`;
+            
+            connection.query(sql, param, (err, res) => {
+                if (err) throw err;
+                console.log('New employee ' + answer.first_name + ' ' + answer.last_name + ' added.')
+            viewEmployees();
+            })
         })
     })
     })
-    }
+}
 
 
 //Add a new role
@@ -223,7 +232,7 @@ const addRole = () => {
                     if(!isNaN(roleSalary)) {
                         return true;
                     } else {
-                        console.log('Please, enter salary for new role')
+                        console.log('Please, enter salary (a number) for new role')
                         return false;
                     }
                 }
@@ -245,10 +254,12 @@ const addRole = () => {
             viewRoles();
         });
     })
+    })
 }
-)}
 
 const updateRole = () => {
+    // Whose employees role do you want to update (list of employees)
+    // What role would you like to assign them (list of roles)
     console.log('UpdateRole chosen');
     exitApp();
 }
