@@ -1,10 +1,8 @@
 const inquirer = require('inquirer');
-const db = require('./db/connection');
 const cTable = require('console.table');
 const connection = require('./db/connection');
 
 const init = () => {
-    //wall art
     mainMenu();
 }
 
@@ -19,6 +17,7 @@ const mainMenu = () => {
             'View All Departments',
             'View All Roles',
             'View All Employees',
+            'View Employees by Manager',
             'Add a Department',
             'Add a Role',
             'Add an Employee',
@@ -38,6 +37,9 @@ const mainMenu = () => {
                 break;
             case 'View All Employees':
                 viewEmployees();
+                break;
+            case 'View Employees by Manager':
+                viewEmployeesByManager();
                 break;
             case 'Add a Department':
                 addDepartment();
@@ -107,6 +109,31 @@ const viewRoles = () => {
         mainMenu();
     });
 }
+
+//Bonus: View employees by manager
+const viewEmployeesByManager = () => {
+    connection.query(`SELECT * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'manager_id',
+                message: 'Please, enter manager',
+                choices:   manager = manager.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}))
+            }
+        ])
+        .then(answer => {
+            var sql = `SELECT * FROM employee WHERE manager_id = ?`
+            connection.query(sql, answer.manager_id, (err, res) => {
+                if (err) throw err;
+                console.table(res);
+                mainMenu();
+            })
+        })
+        }
+    )
+}
+
 // END OF VIEW ROLES
 
 //ADD DATA
@@ -211,7 +238,6 @@ const addEmployee = () => {
     })
 }
 
-
 //Add a new role
 const addRole = () => {
     //Select department options for department list
@@ -261,11 +287,14 @@ const addRole = () => {
             if (err) throw err;
             console.log('New role ' + 'added.')
             viewRoles();
-        });
+        })
     })
     })
 }
+//END OF ADD DATA
 
+//UPDATE/CHANGE DATA
+// Change an employee's role
 const updateRole = () => {
     connection.query('Select * FROM employee', (err, employee) => {
         if (err) throw err; 
@@ -313,6 +342,7 @@ const updateRole = () => {
     })
 }
 
+//Bonus: Change employee's manager
 const updateManager = () => {
     connection.query('Select * FROM employee', (err, employee) => {
         if (err) throw err;
@@ -355,6 +385,7 @@ const updateManager = () => {
     })
 }
 
+// Exit Application
 const exitApp = () => { 
     console.log('Have a nice day.');
     process.exit();
