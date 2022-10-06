@@ -3,6 +3,11 @@ const db = require('./db/connection');
 const cTable = require('console.table');
 const connection = require('./db/connection');
 
+const init = () => {
+    //wall art
+    mainMenu();
+}
+
 const mainMenu = () => {
     console.log('Welcome to the Management Database.')
     return inquirer.prompt([
@@ -258,10 +263,55 @@ const addRole = () => {
 }
 
 const updateRole = () => {
-    // Whose employees role do you want to update (list of employees)
-    // What role would you like to assign them (list of roles)
-    console.log('UpdateRole chosen');
-    exitApp();
+    connection.query('Select * FROM employee', (err, employee) => {
+        if (err) throw err; 
+        connection.query('Select * FROM role', (err, role) => {
+            if (err) throw err; 
+
+            connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
+                if (err) throw err;
+        
+                manager = manager.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}));
+                manager.push({name:'None'});
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employee_id',
+                message: 'Choose an employee to update their role',
+                choices: employee.map( employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.employee_id}))
+            },
+            {
+                type: 'list',
+                name: 'role_id',
+                message: 'Choose a new role for this employee',
+                choices: role.map(role => ({name:role.title, value: role.role_id})),
+            },
+    ])
+
+   .then(answer => {
+    //If the answer for manager is none, the value should be null in the database
+    if (answer.manager_id === 'None') {
+        answer.manager_id = null;
+    };
+
+    const sql = `UPDATE employee
+                SET role_id = ?
+                WHERE employee_id = ?`;
+    const param = [answer.role_id, answer.employee_id]
+
+    connection.query(sql, param, (err, res) => {
+        if (err) throw err;
+        console.log('Role changed');
+    viewEmployees();
+
+    // select employee WHERE id is 
+    // Change role id
+   }) 
+})
+})
+})
+})
 }
 
 const exitApp = () => { 
@@ -269,4 +319,4 @@ const exitApp = () => {
     process.exit();
 }
 
-mainMenu();
+init();
