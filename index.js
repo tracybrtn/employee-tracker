@@ -23,6 +23,7 @@ const mainMenu = () => {
             'Add a Role',
             'Add an Employee',
             'Update an Employee Role',
+            'Update an Employee Manager',
             'Exit'
         ]
         }
@@ -49,6 +50,9 @@ const mainMenu = () => {
                 break;
             case 'Update an Employee Role':
                 updateRole();
+                break;
+            case 'Update an Employee Manager':
+                updateManager();
                 break;
             case 'Exit':
                 exitApp();
@@ -265,14 +269,12 @@ const addRole = () => {
 const updateRole = () => {
     connection.query('Select * FROM employee', (err, employee) => {
         if (err) throw err; 
-        connection.query('Select * FROM role', (err, role) => {
-            if (err) throw err; 
-
-            connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
-                if (err) throw err;
-        
-                manager = manager.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}));
-                manager.push({name:'None'});
+    connection.query('Select * FROM role', (err, role) => {
+        if (err) throw err; 
+    connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
+        if (err) throw err;
+        manager = manager.map(manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}));
+        manager.push({name:'None'});
 
         inquirer.prompt([
             {
@@ -287,31 +289,70 @@ const updateRole = () => {
                 message: 'Choose a new role for this employee',
                 choices: role.map(role => ({name:role.title, value: role.role_id})),
             },
-    ])
+        ])
 
-   .then(answer => {
-    //If the answer for manager is none, the value should be null in the database
-    if (answer.manager_id === 'None') {
-        answer.manager_id = null;
-    };
+        .then(answer => {
+            //If the answer for manager is none, the value should be null in the database
+            if (answer.manager_id === 'None') {
+                answer.manager_id = null;
+            };
 
-    const sql = `UPDATE employee
-                SET role_id = ?
-                WHERE employee_id = ?`;
-    const param = [answer.role_id, answer.employee_id]
+            const sql = `UPDATE employee
+                        SET role_id = ?
+                        WHERE employee_id = ?`;
+            const param = [answer.role_id, answer.employee_id]
 
-    connection.query(sql, param, (err, res) => {
+            connection.query(sql, param, (err, res) => {
+                if (err) throw err;
+                console.log('Role changed');
+            viewEmployees();
+        })
+        })
+    })
+    })
+    })
+}
+
+const updateManager = () => {
+    connection.query('Select * FROM employee', (err, employee) => {
         if (err) throw err;
-        console.log('Role changed');
-    viewEmployees();
+    connection.query(`Select * FROM employee WHERE manager_id IS NULL`, (err, manager) => {
+        if (err) throw err;
+        manager = manager.map( manager => ({name: manager.first_name + " " + manager.last_name, value: manager.employee_id}))
+        manager.push({name:'None'});
 
-    // select employee WHERE id is 
-    // Change role id
-   }) 
-})
-})
-})
-})
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employee_id',
+                message: 'Choose an employee to update their manager',
+                choices: employee.map( employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.employee_id}))
+            },
+            {
+                type: 'list',
+                name: 'manager_id',
+                message: 'Choose a new manager for this employee',
+                choices: manager
+            }
+        ])
+        .then(answer => {
+            //If the answer for manager is none, the value should be null in the database
+            if (answer.manager_id === 'None') {
+                answer.manager_id = null;
+            };
+            const sql = `UPDATE employee
+                        SET manager_id = ?
+                        WHERE employee_id = ?`;
+            const param = [answer.manager_id, answer.employee_id]
+
+            connection.query(sql, param, (err, res) => {
+                if (err) throw err;
+                console.log('Manager changed');
+            viewEmployees();
+            })
+        })
+    })
+    })
 }
 
 const exitApp = () => { 
