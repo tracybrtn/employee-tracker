@@ -15,7 +15,6 @@
 # Description
 A command-line content management system that manages a company's employee database using Node.js, Inquirer, and MySQL.
 
-
 ## User Story
 AS A business owner
 - I WANT to be able to view and manage the departments, roles, and employees in my company
@@ -42,7 +41,7 @@ GIVEN a command-line application that accepts user input
 
 ## Installation
 
-User should clone this repository from Github and download Node. From your terminal run commands `npm init`, `npm install inquirer`, and `npm install mysql2`. Here is a [video demonstrating how to install and use the app.]
+User should clone this repository from Github and download Node. From your terminal run commands `npm init`, `npm install inquirer`, and `npm install mysql2`. Here is a [video demonstrating how to install and use the app.](https://drive.google.com/file/d/1gmAxtNAi-hhHbq24r0TgZvwUltxsN4Tf/view)
 
 ## Usage
 
