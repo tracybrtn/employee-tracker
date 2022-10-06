@@ -42,7 +42,7 @@ GIVEN a command-line application that accepts user input
 
 ## Installation
 
-User should clone this repository from Github and download Node. From your terminal run commands `npm init` and `npm install inquirer`. Here is a [video demonstrating how to install and use the app.]
+User should clone this repository from Github and download Node. From your terminal run commands `npm init`, `npm install inquirer`, and `npm install mysql2`. Here is a [video demonstrating how to install and use the app.]
 
 ## Usage
 
